@@ -52,46 +52,6 @@ describe "SymbolsView", ->
         expect(symbolsView.list.children('li:last').find('.secondary-line')).toHaveText 'Line 2'
         expect(symbolsView.error).not.toBeVisible()
 
-    it "caches tags until the editor changes", ->
-      runs ->
-        editor = atom.workspace.getActiveTextEditor()
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
-
-      waitsForPromise ->
-        activationPromise
-
-      runs ->
-        symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
-
-      waitsFor ->
-        symbolsView.list.children('li').length > 0
-
-      runs ->
-        symbolsView.cancel()
-        spyOn(symbolsView, 'generateTags').andCallThrough()
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
-
-      waitsFor ->
-        symbolsView.list.children('li').length > 0
-
-      runs ->
-        expect(symbolsView.loading).toBeEmpty()
-        expect(symbolsView.list.children('li').length).toBe 2
-        expect(symbolsView.generateTags).not.toHaveBeenCalled()
-        editor.save()
-        symbolsView.cancel()
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
-
-      waitsFor ->
-        symbolsView.list.children('li').length > 0
-
-      runs ->
-        expect(symbolsView.loading).toBeEmpty()
-        expect(symbolsView.list.children('li').length).toBe 2
-        expect(symbolsView.generateTags).toHaveBeenCalled()
-        editor.destroy()
-        expect(symbolsView.cachedTags).toEqual {}
-
     it "displays an error when no tags match text in mini-editor", ->
       runs ->
         atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")

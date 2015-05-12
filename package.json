@@ -1,17 +1,17 @@
 {
-  "name": "symbols-view",
-  "version": "0.96.0",
+  "name": "gnu-global",
+  "version": "0.0.1",
   "main": "./lib/main",
   "description": "Jump to a function/method in the current editor with `cmd-r`.",
   "license": "MIT",
   "activationCommands": {
     "atom-workspace": [
-      "symbols-view:toggle-project-symbols"
+      "gnu-global:toggle-project-symbols"
     ],
     "atom-text-editor": [
-      "symbols-view:go-to-declaration",
-      "symbols-view:return-from-declaration",
-      "symbols-view:toggle-file-symbols"
+      "gnu-global:go-to-declaration",
+      "gnu-global:return-from-declaration",
+      "gnu-global:toggle-file-symbols"
     ]
   },
   "dependencies": {
@@ -24,7 +24,7 @@
     "q": "^1.1.2",
     "temp": "~0.8.1"
   },
-  "repository": "https://github.com/atom/symbols-view",
+  "repository": "https://github.com/harai/atom-gnu-global",
   "engines": {
     "atom": "*"
   },

@@ -14,13 +14,13 @@ describe "SymbolsView", ->
   beforeEach ->
     atom.project.setPaths([
       temp.mkdirSync("other-dir-")
-      temp.mkdirSync('atom-symbols-view-')
+      temp.mkdirSync('atom-gnu-global-')
     ])
 
     directory = atom.project.getDirectories()[1]
     fs.copySync(path.join(__dirname, 'fixtures', 'js'), atom.project.getPaths()[1])
 
-    activationPromise = atom.packages.activatePackage("symbols-view")
+    activationPromise = atom.packages.activatePackage("gnu-global")
     jasmine.attachToDOM(getWorkspaceView())
 
   describe "when tags can be generated for a file", ->
@@ -30,13 +30,13 @@ describe "SymbolsView", ->
 
     it "initially displays all JavaScript functions with line numbers", ->
       runs ->
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
+        atom.commands.dispatch(getEditorView(), "gnu-global:toggle-file-symbols")
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
+        symbolsView = $(getWorkspaceView()).find('.gnu-global').view()
         expect(symbolsView.loading).toBeVisible()
 
       waitsFor ->
@@ -44,7 +44,7 @@ describe "SymbolsView", ->
 
       runs ->
         expect(symbolsView.loading).toBeEmpty()
-        expect($(getWorkspaceView()).find('.symbols-view')).toExist()
+        expect($(getWorkspaceView()).find('.gnu-global')).toExist()
         expect(symbolsView.list.children('li').length).toBe 2
         expect(symbolsView.list.children('li:first').find('.primary-line')).toHaveText 'quicksort'
         expect(symbolsView.list.children('li:first').find('.secondary-line')).toHaveText 'Line 1'
@@ -54,13 +54,13 @@ describe "SymbolsView", ->
 
     it "displays an error when no tags match text in mini-editor", ->
       runs ->
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
+        atom.commands.dispatch(getEditorView(), "gnu-global:toggle-file-symbols")
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
+        symbolsView = $(getWorkspaceView()).find('.gnu-global').view()
 
       waitsFor ->
         symbolsView.list.children('li').length > 0
@@ -69,7 +69,7 @@ describe "SymbolsView", ->
         symbolsView.filterEditorView.setText("nothing will match this")
         window.advanceClock(symbolsView.inputThrottle)
 
-        expect($(getWorkspaceView()).find('.symbols-view')).toExist()
+        expect($(getWorkspaceView()).find('.gnu-global')).toExist()
         expect(symbolsView.list.children('li').length).toBe 0
         expect(symbolsView.error).toBeVisible()
         expect(symbolsView.error.text().length).toBeGreaterThan 0
@@ -84,14 +84,14 @@ describe "SymbolsView", ->
     it "moves the cursor to the selected function", ->
       runs ->
         expect(atom.workspace.getActiveTextEditor().getCursorBufferPosition()).toEqual [0,0]
-        expect($(getWorkspaceView()).find('.symbols-view')).not.toExist()
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
+        expect($(getWorkspaceView()).find('.gnu-global')).not.toExist()
+        atom.commands.dispatch(getEditorView(), "gnu-global:toggle-file-symbols")
 
       waitsFor ->
-        $(getWorkspaceView()).find('.symbols-view').find('li').length
+        $(getWorkspaceView()).find('.gnu-global').find('li').length
 
       runs ->
-        $(getWorkspaceView()).find('.symbols-view').find('li:eq(1)').mousedown().mouseup()
+        $(getWorkspaceView()).find('.gnu-global').find('li:eq(1)').mousedown().mouseup()
         expect(atom.workspace.getActiveTextEditor().getCursorBufferPosition()).toEqual [1,2]
 
   describe "when tags can't be generated for a file", ->
@@ -101,13 +101,13 @@ describe "SymbolsView", ->
 
     it "shows an error message when no matching tags are found", ->
       runs ->
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
+        atom.commands.dispatch(getEditorView(), "gnu-global:toggle-file-symbols")
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
+        symbolsView = $(getWorkspaceView()).find('.gnu-global').view()
 
       waitsFor ->
         symbolsView.error.isVisible()
@@ -152,7 +152,7 @@ describe "SymbolsView", ->
       runs ->
         editor = atom.workspace.getActiveTextEditor()
         editor.setCursorBufferPosition([0,2])
-        atom.commands.dispatch(getEditorView(), 'symbols-view:go-to-declaration')
+        atom.commands.dispatch(getEditorView(), 'gnu-global:go-to-declaration')
 
       waitsForPromise ->
         activationPromise
@@ -168,7 +168,7 @@ describe "SymbolsView", ->
         editor = atom.workspace.getActiveTextEditor()
         editor.setCursorBufferPosition([6,24])
         spyOn(SymbolsView.prototype, "moveToPosition").andCallThrough()
-        atom.commands.dispatch(getEditorView(), 'symbols-view:go-to-declaration')
+        atom.commands.dispatch(getEditorView(), 'gnu-global:go-to-declaration')
 
       waitsFor ->
         SymbolsView::moveToPosition.callCount is 1
@@ -183,13 +183,13 @@ describe "SymbolsView", ->
       runs ->
         editor = atom.workspace.getActiveTextEditor()
         editor.setCursorBufferPosition([8,14])
-        atom.commands.dispatch(getEditorView(), 'symbols-view:go-to-declaration')
+        atom.commands.dispatch(getEditorView(), 'gnu-global:go-to-declaration')
 
       waitsFor ->
-        $(getWorkspaceView()).find('.symbols-view').find('li').length > 0
+        $(getWorkspaceView()).find('.gnu-global').find('li').length > 0
 
       runs ->
-        symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
+        symbolsView = $(getWorkspaceView()).find('.gnu-global').view()
         expect(symbolsView.list.children('li').length).toBe 2
         expect(symbolsView).toBeVisible()
         spyOn(SymbolsView.prototype, "moveToPosition").andCallThrough()
@@ -203,7 +203,7 @@ describe "SymbolsView", ->
         expect(atom.workspace.getActiveTextEditor().getCursorBufferPosition()).toEqual [0,4]
 
     it "includes ? and ! characters in ruby symbols", ->
-      atom.project.setPaths([temp.mkdirSync("atom-symbols-view-ruby-")])
+      atom.project.setPaths([temp.mkdirSync("atom-gnu-global-ruby-")])
       fs.copySync(path.join(__dirname, 'fixtures', 'ruby'), atom.project.getPaths()[0])
 
       waitsForPromise ->
@@ -215,7 +215,7 @@ describe "SymbolsView", ->
       runs ->
         spyOn(SymbolsView.prototype, "moveToPosition").andCallThrough()
         atom.workspace.getActiveTextEditor().setCursorBufferPosition([13,4])
-        atom.commands.dispatch(getEditorView(), 'symbols-view:go-to-declaration')
+        atom.commands.dispatch(getEditorView(), 'gnu-global:go-to-declaration')
 
       waitsForPromise ->
         activationPromise
@@ -227,7 +227,7 @@ describe "SymbolsView", ->
         expect(atom.workspace.getActiveTextEditor().getCursorBufferPosition()).toEqual [5,2]
         SymbolsView::moveToPosition.reset()
         atom.workspace.getActiveTextEditor().setCursorBufferPosition([14,2])
-        atom.commands.dispatch(getEditorView(), 'symbols-view:go-to-declaration')
+        atom.commands.dispatch(getEditorView(), 'gnu-global:go-to-declaration')
 
       waitsFor ->
         SymbolsView::moveToPosition.callCount is 1
@@ -236,7 +236,7 @@ describe "SymbolsView", ->
         expect(atom.workspace.getActiveTextEditor().getCursorBufferPosition()).toEqual [9,2]
         SymbolsView::moveToPosition.reset()
         atom.workspace.getActiveTextEditor().setCursorBufferPosition([15,5])
-        atom.commands.dispatch(getEditorView(), 'symbols-view:go-to-declaration')
+        atom.commands.dispatch(getEditorView(), 'gnu-global:go-to-declaration')
 
       waitsFor ->
         SymbolsView::moveToPosition.callCount is 1
@@ -252,7 +252,7 @@ describe "SymbolsView", ->
         runs ->
           editor = atom.workspace.getActiveTextEditor()
           editor.setCursorBufferPosition([6,0])
-          atom.commands.dispatch(getEditorView(), 'symbols-view:return-from-declaration')
+          atom.commands.dispatch(getEditorView(), 'gnu-global:return-from-declaration')
 
         waitsForPromise ->
           activationPromise
@@ -268,7 +268,7 @@ describe "SymbolsView", ->
           editor = atom.workspace.getActiveTextEditor()
           editor.setCursorBufferPosition([6,24])
           spyOn(SymbolsView.prototype, "moveToPosition").andCallThrough()
-          atom.commands.dispatch(getEditorView(), 'symbols-view:go-to-declaration')
+          atom.commands.dispatch(getEditorView(), 'gnu-global:go-to-declaration')
 
         waitsForPromise ->
           activationPromise
@@ -278,7 +278,7 @@ describe "SymbolsView", ->
 
         runs ->
           expect(editor.getCursorBufferPosition()).toEqual [2,0]
-          atom.commands.dispatch(getEditorView(), 'symbols-view:return-from-declaration')
+          atom.commands.dispatch(getEditorView(), 'gnu-global:return-from-declaration')
 
         waitsFor ->
           SymbolsView::moveToPosition.callCount is 2
@@ -297,7 +297,7 @@ describe "SymbolsView", ->
           editor = atom.workspace.getActiveTextEditor()
           editor.setCursorBufferPosition([8,14])
           spyOn(SymbolsView.prototype, "moveToPosition").andCallThrough()
-          atom.commands.dispatch(getEditorView(), 'symbols-view:go-to-declaration')
+          atom.commands.dispatch(getEditorView(), 'gnu-global:go-to-declaration')
 
         waitsFor ->
           SymbolsView::moveToPosition.callCount is 1
@@ -313,14 +313,14 @@ describe "SymbolsView", ->
         atom.workspace.open(directory.resolve("tagged.js"))
 
       runs ->
-        expect($(getWorkspaceView()).find('.symbols-view')).not.toExist()
-        atom.commands.dispatch(getWorkspaceView(), "symbols-view:toggle-project-symbols")
+        expect($(getWorkspaceView()).find('.gnu-global')).not.toExist()
+        atom.commands.dispatch(getWorkspaceView(), "gnu-global:toggle-project-symbols")
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
+        symbolsView = $(getWorkspaceView()).find('.gnu-global').view()
         expect(symbolsView.loading).toBeVisible()
 
       waitsFor ->
@@ -329,14 +329,14 @@ describe "SymbolsView", ->
       runs ->
         directoryBasename = path.basename(directory.getPath())
         expect(symbolsView.loading).toBeEmpty()
-        expect($(getWorkspaceView()).find('.symbols-view')).toExist()
+        expect($(getWorkspaceView()).find('.gnu-global')).toExist()
         expect(symbolsView.list.children('li').length).toBe 4
         expect(symbolsView.list.children('li:first').find('.primary-line')).toHaveText 'callMeMaybe'
         expect(symbolsView.list.children('li:first').find('.secondary-line')).toHaveText path.join(directoryBasename, 'tagged.js')
         expect(symbolsView.list.children('li:last').find('.primary-line')).toHaveText 'thisIsCrazy'
         expect(symbolsView.list.children('li:last').find('.secondary-line')).toHaveText path.join(directoryBasename, 'tagged.js')
         expect(symbolsView.error).not.toBeVisible()
-        atom.commands.dispatch(getWorkspaceView(), "symbols-view:toggle-project-symbols")
+        atom.commands.dispatch(getWorkspaceView(), "gnu-global:toggle-project-symbols")
 
         fs.removeSync(directory.resolve('tags'))
 
@@ -344,7 +344,7 @@ describe "SymbolsView", ->
         symbolsView.reloadTags
 
       runs ->
-        atom.commands.dispatch(getWorkspaceView(), "symbols-view:toggle-project-symbols")
+        atom.commands.dispatch(getWorkspaceView(), "gnu-global:toggle-project-symbols")
 
       waitsFor ->
         symbolsView.error.text().length > 0
@@ -363,14 +363,14 @@ describe "SymbolsView", ->
           atom.workspace.open(directory.resolve("tagged.js"))
 
         runs ->
-          expect($(getWorkspaceView()).find('.symbols-view')).not.toExist()
-          atom.commands.dispatch(getWorkspaceView(), "symbols-view:toggle-project-symbols")
+          expect($(getWorkspaceView()).find('.gnu-global')).not.toExist()
+          atom.commands.dispatch(getWorkspaceView(), "gnu-global:toggle-project-symbols")
 
         waitsForPromise ->
           activationPromise
 
         runs ->
-          symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
+          symbolsView = $(getWorkspaceView()).find('.gnu-global').view()
 
         waitsFor ->
           symbolsView.list.children('li').length > 0
@@ -385,13 +385,13 @@ describe "SymbolsView", ->
           fs.removeSync(directory.resolve("tagged.js"))
 
         it "doesn't open the editor", ->
-          atom.commands.dispatch(getWorkspaceView(), "symbols-view:toggle-project-symbols")
+          atom.commands.dispatch(getWorkspaceView(), "gnu-global:toggle-project-symbols")
 
           waitsForPromise ->
             activationPromise
 
           runs ->
-            symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
+            symbolsView = $(getWorkspaceView()).find('.gnu-global').view()
 
           waitsFor ->
             symbolsView.list.children('li').length > 0
@@ -404,7 +404,7 @@ describe "SymbolsView", ->
 
   describe "when useEditorGrammarAsCtagsLanguage is set to true", ->
     it "uses the language associated with the editor's grammar", ->
-      atom.config.set('symbols-view.useEditorGrammarAsCtagsLanguage', true)
+      atom.config.set('gnu-global.useEditorGrammarAsCtagsLanguage', true)
 
       waitsForPromise ->
         atom.packages.activatePackage('language-javascript')
@@ -415,19 +415,19 @@ describe "SymbolsView", ->
       runs ->
         atom.workspace.getActiveTextEditor().setText("var test = function() {}")
         atom.workspace.getActiveTextEditor().save()
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
+        atom.commands.dispatch(getEditorView(), "gnu-global:toggle-file-symbols")
 
       waitsForPromise ->
         activationPromise
 
       waitsFor ->
-        $(getWorkspaceView()).find('.symbols-view').view().error.isVisible()
+        $(getWorkspaceView()).find('.gnu-global').view().error.isVisible()
 
       runs ->
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
+        atom.commands.dispatch(getEditorView(), "gnu-global:toggle-file-symbols")
         atom.workspace.getActiveTextEditor().setGrammar(atom.grammars.grammarForScopeName('source.js'))
-        atom.commands.dispatch(getEditorView(), "symbols-view:toggle-file-symbols")
-        symbolsView = $(getWorkspaceView()).find('.symbols-view').view()
+        atom.commands.dispatch(getEditorView(), "gnu-global:toggle-file-symbols")
+        symbolsView = $(getWorkspaceView()).find('.gnu-global').view()
         expect(symbolsView.loading).toBeVisible()
 
       waitsFor ->
@@ -435,6 +435,6 @@ describe "SymbolsView", ->
 
       runs ->
         expect(symbolsView.loading).toBeEmpty()
-        expect($(getWorkspaceView()).find('.symbols-view')).toExist()
+        expect($(getWorkspaceView()).find('.gnu-global')).toExist()
         expect(symbolsView.list.children('li:first').find('.primary-line')).toHaveText 'test'
         expect(symbolsView.list.children('li:first').find('.secondary-line')).toHaveText 'Line 1'

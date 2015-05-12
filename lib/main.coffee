@@ -8,12 +8,12 @@ module.exports =
     @stack = []
 
     @workspaceSubscription = atom.commands.add 'atom-workspace',
-      'symbols-view:toggle-project-symbols': => @createProjectView().toggle()
+      'gnu-global:toggle-project-symbols': => @createProjectView().toggle()
 
     @editorSubscription = atom.commands.add 'atom-text-editor',
-      'symbols-view:toggle-file-symbols': => @createFileView().toggle()
-      'symbols-view:go-to-declaration': => @createGoToView().toggle()
-      'symbols-view:return-from-declaration': => @createGoBackView().toggle()
+      'gnu-global:toggle-file-symbols': => @createFileView().toggle()
+      'gnu-global:go-to-declaration': => @createGoToView().toggle()
+      'gnu-global:return-from-declaration': => @createGoBackView().toggle()
 
   deactivate: ->
     if @fileView?

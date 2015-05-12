@@ -2,10 +2,10 @@
   {
     'label': 'Packages'
     'submenu': [
-      'label': 'Symbols'
+      'label': 'GNU GLOBAL'
       'submenu': [
-        { 'label': 'File Symbols', 'command': 'symbols-view:toggle-file-symbols' }
-        { 'label': 'Project Symbols', 'command': 'symbols-view:toggle-project-symbols' }
+        { 'label': 'File Symbols', 'command': 'gnu-global:toggle-file-symbols' }
+        { 'label': 'Project Symbols', 'command': 'gnu-global:toggle-project-symbols' }
       ]
     ]
   }
@@ -13,5 +13,5 @@
 
 'context-menu':
   'atom-text-editor:not([mini])': [
-    { 'label': 'Go to Declaration', 'command': 'symbols-view:go-to-declaration' }
+    { 'label': 'Go to Declaration', 'command': 'gnu-global:go-to-declaration' }
   ]

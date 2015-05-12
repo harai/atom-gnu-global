@@ -1,18 +1,7 @@
 '.platform-darwin atom-text-editor':
-  'cmd-r': 'gnu-global:toggle-file-symbols'
   'cmd-alt-down': 'gnu-global:go-to-declaration'
   'cmd-alt-up': 'gnu-global:return-from-declaration'
 
-'.platform-win32 atom-text-editor':
-  'ctrl-r': 'gnu-global:toggle-file-symbols'
-
 '.platform-linux atom-text-editor':
-  'ctrl-r': 'gnu-global:toggle-file-symbols'
   'ctrl-alt-down': 'gnu-global:go-to-declaration'
   'ctrl-alt-up': 'gnu-global:return-from-declaration'
-
-'.platform-darwin':
-  'cmd-R': 'gnu-global:toggle-project-symbols'
-
-'.platform-win32, .platform-linux':
-  'ctrl-R': 'gnu-global:toggle-project-symbols'

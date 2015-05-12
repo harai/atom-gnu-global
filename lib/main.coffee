@@ -7,23 +7,11 @@ module.exports =
   activate: ->
     @stack = []
 
-    @workspaceSubscription = atom.commands.add 'atom-workspace',
-      'gnu-global:toggle-project-symbols': => @createProjectView().toggle()
-
     @editorSubscription = atom.commands.add 'atom-text-editor',
-      'gnu-global:toggle-file-symbols': => @createFileView().toggle()
       'gnu-global:go-to-declaration': => @createGoToView().toggle()
       'gnu-global:return-from-declaration': => @createGoBackView().toggle()
 
   deactivate: ->
-    if @fileView?
-      @fileView.destroy()
-      @fileView = null
-
-    if @projectView?
-      @projectView.destroy()
-      @projectView = null
-
     if @goToView?
       @goToView.destroy()
       @goToView = null
@@ -39,18 +27,6 @@ module.exports =
     if @editorSubscription?
       @editorSubscription.dispose()
       @editorSubscription = null
-
-  createFileView: ->
-    unless @fileView?
-      FileView  = require './file-view'
-      @fileView = new FileView(@stack)
-    @fileView
-
-  createProjectView: ->
-    unless @projectView?
-      ProjectView  = require './project-view'
-      @projectView = new ProjectView(@stack)
-    @projectView
 
   createGoToView: ->
     unless @goToView?

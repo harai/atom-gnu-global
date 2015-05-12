@@ -5,13 +5,9 @@
   "description": "Jump to a function/method in the current editor with `cmd-r`.",
   "license": "MIT",
   "activationCommands": {
-    "atom-workspace": [
-      "gnu-global:toggle-project-symbols"
-    ],
     "atom-text-editor": [
       "gnu-global:go-to-declaration",
-      "gnu-global:return-from-declaration",
-      "gnu-global:toggle-file-symbols"
+      "gnu-global:return-from-declaration"
     ]
   },
   "dependencies": {

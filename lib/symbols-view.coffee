@@ -74,12 +74,4 @@ class SymbolsView extends SelectListView
     @panel.show()
     @focusFilterEditor()
 
-  getTagLine: (tag) ->
-    # Remove leading /^ and trailing $/
-    pattern = tag.pattern?.replace(/(^^\/\^)|(\$\/$)/g, '').trim()
-
-    return unless pattern
-    file = path.join(tag.directory, tag.file)
-    return unless fs.isFileSync(file)
-    for line, index in fs.readFileSync(file, 'utf8').split('\n')
-      return new Point(index, 0) if pattern is line.trim()
+  getTagLine: (tag) -> new Point(tag.line - 1, 0)

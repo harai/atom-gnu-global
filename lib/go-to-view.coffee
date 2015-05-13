@@ -27,15 +27,17 @@ class GoToView extends SymbolsView
     return unless editor?
 
     @findTag(editor).then (matches) =>
+      console.log matches
       tags = []
       for match in matches
-        position = @getTagLine(match)
-        continue unless position
+        match.position = @getTagLine(match)
+        continue unless match.position
         match.name = path.basename(match.file)
         tags.push(match)
 
       if tags.length is 1
         @openTag(tags[0])
       else if tags.length > 0
+        console.log tags
         @setItems(tags)
         @attach()

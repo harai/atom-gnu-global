@@ -1,4 +1,14 @@
-{BufferedProces} = require 'atom'
+{BufferedProcess} = require 'atom'
+path = require 'path'
+
+matcher = /^([^\s]+)\s+(\d+)\s+([^\s]+)\s+(.*)$/
+
+readLine = (line) ->
+  m = matcher.exec(line)
+
+  line: +m[2]
+  file: path.basename(m[3])
+  directory: path.dirname(m[3])
 
 module.exports =
   find: (editor, callback) ->
@@ -13,5 +23,15 @@ module.exports =
     unless symbol?.length > 0
       return process.nextTick -> callback(null, [])
 
-    # TODO: implement
-    console.log('foobar')
+    lines = []
+    command = 'global'
+    args = ['-xd', symbol]
+    stdout = (str) ->
+      lines = lines.concat(
+        str.split('\n').map((l) -> l.trim()).filter((l) -> l != '').map(readLine))
+    stderr = (err) -> console.log(err)
+    exit = ->
+      console.log lines
+      callback(null, lines)
+
+    new BufferedProcess({command, args, stdout, stderr, exit})

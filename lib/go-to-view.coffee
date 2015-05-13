@@ -2,6 +2,7 @@ path = require 'path'
 Q = require 'q'
 SymbolsView = require './symbols-view'
 TagReader = require './tag-reader'
+{$$} = require 'atom-space-pen-views'
 
 module.exports =
 class GoToView extends SymbolsView
@@ -10,6 +11,14 @@ class GoToView extends SymbolsView
       @cancel()
     else
       @populate()
+
+  viewForItem: ({position, name, file, directory}) ->
+    if atom.project.getPaths().length > 1
+      file = path.join(path.basename(directory), file)
+    $$ ->
+      @li class: 'two-lines', =>
+        @div "#{name}:#{position.row + 1}", class: 'primary-line'
+        @div directory, class: 'secondary-line'
 
   detached: ->
     @deferredFind?.resolve([])
@@ -27,7 +36,6 @@ class GoToView extends SymbolsView
     return unless editor?
 
     @findTag(editor).then (matches) =>
-      console.log matches
       tags = []
       for match in matches
         match.position = @getTagLine(match)
@@ -38,6 +46,5 @@ class GoToView extends SymbolsView
       if tags.length is 1
         @openTag(tags[0])
       else if tags.length > 0
-        console.log tags
         @setItems(tags)
         @attach()

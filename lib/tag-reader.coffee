@@ -31,7 +31,6 @@ module.exports =
         str.split('\n').map((l) -> l.trim()).filter((l) -> l != '').map(readLine))
     stderr = (err) -> console.log(err)
     exit = ->
-      console.log lines
       callback(null, lines)
 
     new BufferedProcess({command, args, stdout, stderr, exit})

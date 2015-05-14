@@ -12,13 +12,14 @@ class GoToView extends SymbolsView
     else
       @populate()
 
-  viewForItem: ({position, name, file, directory}) ->
+  viewForItem: ({position, name, file, directory, content}) ->
     if atom.project.getPaths().length > 1
       file = path.join(path.basename(directory), file)
     $$ ->
-      @li class: 'two-lines', =>
+      @li class: 'three-lines', =>
         @div "#{name}:#{position.row + 1}", class: 'primary-line'
         @div directory, class: 'secondary-line'
+        @div content, class: 'tertiary-line'
 
   detached: ->
     @deferredFind?.resolve([])

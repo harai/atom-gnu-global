@@ -9,6 +9,7 @@ readLine = (line) ->
   line: +m[2]
   file: path.basename(m[3])
   directory: path.dirname(m[3])
+  content: m[4]
 
 module.exports =
   find: (editor, callback) ->
